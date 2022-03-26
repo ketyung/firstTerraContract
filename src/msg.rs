@@ -26,5 +26,5 @@ pub struct CountResponse {
     pub count: i32,
     pub message : String, 
     pub owner : String, 
-    pub updated : cosmwasm_std::Timestamp, 
+    pub updated : u64, 
 }

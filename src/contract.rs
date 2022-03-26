@@ -88,5 +88,5 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
 fn query_count(deps: Deps) -> StdResult<CountResponse> {
     let state = STATE.load(deps.storage)?;
     Ok(CountResponse { count: state.count, message : state.message, 
-        owner : state.owner.into_string(), updated : state.updated  })
+        owner : state.owner.into_string(), updated : state.updated.nanos() / 1_000_000  })
 }

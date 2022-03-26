@@ -1,5 +1,21 @@
 # Just My First test of Rust smart contract on the Terra Blockchain
 
+Test On The Terrain Console
+
+1. Start Terrain Console
+
+terrain console 
+
+## Test incrementing counter 
+terrain> lib.increment().then( res =>{ console.log("result is :", res); });
+
+## Test getting count
+terrain> lib.getCount().then (res => { console.log("Counter is count:", 
+res.count, "message:", res.message,"updated at:", new Date(res.updated), "owner::", res.owner ); })
+
+## Test reseting count
+terrain> lib.reset().then( res=>{ console.log("res:", res);});
+
 # CosmWasm Starter Pack
 
 This is a template to build smart contracts in Rust to run inside a
