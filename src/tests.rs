@@ -24,7 +24,7 @@ mod tests {
         let value: CountResponse = from_binary(&res).unwrap();
         assert_eq!(17, value.count);
 
-        println!("init.test:: {}", value.message);
+        println!("init.test.mesg:: {}", value.message);
    
     }
 
@@ -46,7 +46,7 @@ mod tests {
         let value: CountResponse = from_binary(&res).unwrap();
         assert_eq!(18, value.count);
 
-        println!("increment.test:: {}", value.message);
+        println!("increment.test.mesg:: {}", value.message);
 
     }
 
@@ -76,7 +76,7 @@ mod tests {
         let res = query(deps.as_ref(), mock_env(), QueryMsg::GetCount {}).unwrap();
         let value: CountResponse = from_binary(&res).unwrap();
         assert_eq!(5, value.count);
-        println!("reset.test : {}", value.message);
+        println!("reset.test.mesg : {}", value.message);
         println!("owner : {:?}", value.owner);
 
     }

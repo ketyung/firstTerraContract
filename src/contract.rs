@@ -20,12 +20,15 @@ pub fn instantiate(
 
     let sender = info.sender.clone();
 
-    println!("info.sender.{:?}", sender);
+    let curr_time = _env.block.time;
+
+    println!("info.sender:: {:?},  time :{}", sender.as_str(), curr_time);
 
     let state = State {
         count: msg.count,
         owner: sender,
         message : String::from("This is a state 1"),
+        updated : curr_time, 
     };
        
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
@@ -46,27 +49,29 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
     match msg {
-        ExecuteMsg::Increment {} => try_increment(deps),
-        ExecuteMsg::Reset { count } => try_reset(deps, info, count),
+        ExecuteMsg::Increment {} => try_increment(deps, _env),
+        ExecuteMsg::Reset { count } => try_reset(deps, _env, info, count),
     }
 }
 
-pub fn try_increment(deps: DepsMut) -> Result<Response, ContractError> {
+pub fn try_increment(deps: DepsMut, _env: Env) -> Result<Response, ContractError> {
     STATE.update(deps.storage, |mut state| -> Result<_, ContractError> {
         state.count += 1;
         state.message = format!("Counter incremented {}", state.count);
+        state.updated = _env.block.time; 
         Ok(state)
     })?;
 
     Ok(Response::new().add_attribute("method", "try_increment"))
 }
-pub fn try_reset(deps: DepsMut, info: MessageInfo, count: i32) -> Result<Response, ContractError> {
+pub fn try_reset(deps: DepsMut, _env : Env, info: MessageInfo, count: i32) -> Result<Response, ContractError> {
     STATE.update(deps.storage, |mut state| -> Result<_, ContractError> {
         if info.sender != state.owner {
             return Err(ContractError::Unauthorized {});
         }
         state.count = count;
         state.message = format!("Counter reset :{}", state.count);
+        state.updated = _env.block.time;
 
         Ok(state)
     })?;
@@ -83,5 +88,5 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
 fn query_count(deps: Deps) -> StdResult<CountResponse> {
     let state = STATE.load(deps.storage)?;
     Ok(CountResponse { count: state.count, message : state.message, 
-        owner : state.owner.into_string() })
+        owner : state.owner.into_string(), updated : state.updated  })
 }
