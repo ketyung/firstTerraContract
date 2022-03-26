@@ -4,7 +4,8 @@ use cosmwasm_std::{to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response,
 use cw2::set_contract_version;
 use crate::error::ContractError;
 use crate::msg::{CountResponse, ExecuteMsg, InstantiateMsg, QueryMsg};
-use crate::state::{State, STATE};
+use crate::state::{State, STATE, Member, MEMBERS};
+
 
 // version info for migration info
 const CONTRACT_NAME: &str = "crates.io:counter";
@@ -51,8 +52,12 @@ pub fn execute(
     match msg {
         ExecuteMsg::Increment {} => try_increment(deps, _env),
         ExecuteMsg::Reset { count } => try_reset(deps, _env, info, count),
+        ExecuteMsg::AddNewMember { key, name, age} => add_member(deps, _env, key, name, age),
+        _ => { println!("Currently do nothing, will update this"); Ok( Response::default()) },
     }
 }
+
+
 
 pub fn try_increment(deps: DepsMut, _env: Env) -> Result<Response, ContractError> {
     STATE.update(deps.storage, |mut state| -> Result<_, ContractError> {
@@ -89,4 +94,42 @@ fn query_count(deps: Deps) -> StdResult<CountResponse> {
     let state = STATE.load(deps.storage)?;
     Ok(CountResponse { count: state.count, message : state.message, 
         owner : state.owner.into_string(), updated : state.updated.nanos() / 1_000_000  })
+}
+
+
+
+pub fn add_member (_deps: DepsMut, _env : Env, _key : String , 
+    _name : String , _age : i8) -> Result<Response, ContractError>  {
+   
+   
+    let new_member = Member { name : _name, age : _age, date_joined : _env.block.time };
+
+    println!("New member : {:?}", new_member);
+
+    let mem = MEMBERS.key(_key.as_str());
+    
+    let empty = mem.may_load(_deps.storage)?;
+    assert_eq!(None, empty); // just to check if it already exists by the key
+
+    MEMBERS.save(_deps.storage,_key.as_str(),&new_member)?;
+
+    Ok(Response::new().add_attribute("method", "add_member"))
+
+}
+
+
+
+pub fn update_member (deps: DepsMut, _env : Env, key : String , 
+    name : String , age : i8) -> Result<Response, ContractError>  {
+   
+    let updated_member = Member { name : name, age : age, date_joined : _env.block.time };
+   
+    println!("Updated member : {:?}", updated_member);
+   
+    
+    MEMBERS.save(deps.storage,key.as_str() ,&updated_member)?;
+
+    
+    Ok(Response::new().add_attribute("method", "new member added"))
+
 }

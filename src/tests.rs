@@ -80,4 +80,25 @@ mod tests {
         println!("owner : {:?}", value.owner);
 
     }
+
+    #[test]
+    fn add_new_member() {
+        let mut deps = mock_dependencies(&coins(2, "token"));
+
+        let msg =  ExecuteMsg::AddNewMember { key : "mem-0001".to_string(),  
+        name : "Katherine Tey".to_string(), age : 44 };
+
+        let msg1 = msg.clone();
+
+        let info = mock_info("creator", &coins(2, "token"));
+       
+        let res = execute(deps.as_mut(), mock_env(), info, msg);
+       
+
+        match res {
+            Err(e) => { println!("Error!!! :{:?}", e)}
+            _ => println!("mesg...Added :{:?}", msg1),
+        }
+
+    }
 }
