@@ -99,4 +99,23 @@ mod tests {
         }
 
     }
+
+    #[test]
+    fn update_member() {
+        let mut deps = mock_dependencies(&coins(2, "token"));
+
+        let msg =  ExecuteMsg::UpdateMember { key : "mem-0001".to_string(),  
+        name : "Katherine Tey".to_string(), age : 40 };
+
+        let info = mock_info("creator", &coins(2, "token"));
+       
+        let res = execute(deps.as_mut(), mock_env(), info, msg);
+       
+
+        match res {
+            Err(e) => { println!("Error!!! :{:?}", e)}
+            Ok(v) => println!("member...Updated :{:?}", v),
+        }
+
+    }
 }

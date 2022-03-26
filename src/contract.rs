@@ -53,7 +53,8 @@ pub fn execute(
         ExecuteMsg::Increment {} => try_increment(deps, _env),
         ExecuteMsg::Reset { count } => try_reset(deps, _env, info, count),
         ExecuteMsg::AddNewMember { key, name, age} => add_member(deps, _env, key, name, age),
-        _ => { println!("Currently do nothing, will update this"); Ok( Response::default()) },
+        ExecuteMsg::UpdateMember { key, name, age} => update_member(deps, _env, key, name, age),
+        //_ => { println!("Currently do nothing, will update this"); Ok( Response::default()) },
     }
 }
 
@@ -130,6 +131,6 @@ pub fn update_member (deps: DepsMut, _env : Env, key : String ,
     MEMBERS.save(deps.storage,key.as_str() ,&updated_member)?;
 
     
-    Ok(Response::new().add_attribute("method", "new member added"))
+    Ok(Response::new().add_attribute("method", "member updated!"))
 
 }
