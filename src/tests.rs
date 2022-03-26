@@ -88,8 +88,6 @@ mod tests {
         let msg =  ExecuteMsg::AddNewMember { key : "mem-0001".to_string(),  
         name : "Katherine Tey".to_string(), age : 44 };
 
-        let msg1 = msg.clone();
-
         let info = mock_info("creator", &coins(2, "token"));
        
         let res = execute(deps.as_mut(), mock_env(), info, msg);
@@ -97,7 +95,7 @@ mod tests {
 
         match res {
             Err(e) => { println!("Error!!! :{:?}", e)}
-            _ => println!("mesg...Added :{:?}", msg1),
+            Ok(v) => println!("member...Added :{:?}", v),
         }
 
     }
