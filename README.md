@@ -1,4 +1,4 @@
-# Just My First test app on the Terra Blockchain
+# Just My First test of Rust smart contract on the Terra Blockchain
 
 # CosmWasm Starter Pack
 
