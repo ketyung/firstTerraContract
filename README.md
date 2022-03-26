@@ -7,14 +7,14 @@ Test On The Terrain Console
 ```terrain console``` 
 
 ## Test incrementing counter 
-terrain> ```lib.increment().then( res =>{ console.log("result is :", res); });```
+terrain> ```javascript lib.increment().then( res =>{ console.log("result is :", res); });```
 
 ## Test getting count
-terrain> ```lib.getCount().then (res => { console.log("Counter is count:", 
+terrain> ```javascript lib.getCount().then (res => { console.log("Counter is count:", 
 res.count, "message:", res.message,"updated at:", new Date(res.updated), "owner::", res.owner ); })```
 
-## Test reseting count
-terrain> ```lib.reset().then( res=>{ console.log("res:", res);});```
+## Test resetting count
+terrain> ```javascript lib.reset().then( res=>{ console.log("res:", res);});```
 
 # CosmWasm Starter Pack
 
