@@ -3,7 +3,7 @@ use cosmwasm_std::entry_point;
 use cosmwasm_std::{to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult};
 use cw2::set_contract_version;
 use crate::error::ContractError;
-use crate::msg::{CountResponse, ExecuteMsg, InstantiateMsg, QueryMsg};
+use crate::msg::{CountResponse, ExecuteMsg, InstantiateMsg, QueryMsg, MemberResponse};
 use crate::state::{State, STATE, Member, MEMBERS};
 
 
@@ -54,6 +54,7 @@ pub fn execute(
         ExecuteMsg::Reset { count } => try_reset(deps, _env, info, count),
         ExecuteMsg::AddNewMember { key, name, age} => add_member(deps, _env, key, name, age),
         ExecuteMsg::UpdateMember { key, name, age} => update_member(deps, _env, key, name, age),
+        ExecuteMsg::DeleteMember { key } => delete_member(deps, _env, key ),
         //_ => { println!("Currently do nothing, will update this"); Ok( Response::default()) },
     }
 }
@@ -88,6 +89,7 @@ pub fn try_reset(deps: DepsMut, _env : Env, info: MessageInfo, count: i32) -> Re
 pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
         QueryMsg::GetCount {} => to_binary(&query_count(deps)?),
+        QueryMsg::GetMember {key} => to_binary(&query_member(deps, key)?),
     }
 }
 
@@ -97,6 +99,18 @@ fn query_count(deps: Deps) -> StdResult<CountResponse> {
         owner : state.owner.into_string(), updated : state.updated.nanos() / 1_000_000  })
 }
 
+fn query_member ( deps : Deps, key : String ) -> StdResult<MemberResponse> {
+
+    let mem = MEMBERS.key(key.as_str());
+
+    let stored_mem = mem.may_load(deps.storage)?;
+    if stored_mem == None {
+
+        return Ok(MemberResponse{ found : false , member : None});
+    }
+    
+    Ok(MemberResponse{ found : true , member : stored_mem })
+}
 
 
 pub fn add_member (_deps: DepsMut, _env : Env, _key : String , 
@@ -125,6 +139,16 @@ pub fn update_member (deps: DepsMut, _env : Env, key : String ,
    
     let updated_member = Member { name : name, age : age, date_joined : _env.block.time };
    
+
+    let mem = MEMBERS.key(key.as_str());
+
+    let stored_mem = mem.may_load(deps.storage)?;
+  
+    if stored_mem == None {
+
+        return Err(ContractError::MemberNotFoundError{});
+    }
+
     println!("Updated member : {:?}", updated_member);
    
     
@@ -132,5 +156,23 @@ pub fn update_member (deps: DepsMut, _env : Env, key : String ,
 
     
     Ok(Response::new().add_attribute("method", "member updated!"))
+
+}
+
+pub fn delete_member  (deps: DepsMut, _env : Env, key : String ) -> Result<Response, ContractError>  {
+   
+    let mem = MEMBERS.key(key.as_str());
+
+    let stored_mem = mem.may_load(deps.storage)?;
+  
+    if stored_mem == None {
+
+        return Err(ContractError::MemberNotFoundError{});
+    }
+
+    MEMBERS.remove(deps.storage, key.as_str());
+    
+    Ok(Response::new().add_attribute("method", "member.deleted!"))
+
 
 }

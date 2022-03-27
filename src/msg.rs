@@ -10,11 +10,14 @@ pub struct InstantiateMsg {
 #[serde(rename_all = "snake_case")]
 pub enum ExecuteMsg {
     Increment {},
+
     Reset { count: i32 },
 
     AddNewMember { key : String, name : String, age : i8 },
     
     UpdateMember { key : String, name : String, age : i8 },
+
+    DeleteMember { key : String  },
 
 }
 
@@ -23,6 +26,9 @@ pub enum ExecuteMsg {
 pub enum QueryMsg {
     // GetCount returns the current count as a json-encoded number
     GetCount {},
+
+    GetMember { key : String }, 
+
 }
 
 
@@ -34,3 +40,13 @@ pub struct CountResponse {
     pub owner : String, 
     pub updated : u64, 
 }
+
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+pub struct MemberResponse {
+
+    pub found : bool, 
+
+    pub member: Option<crate::state::Member>, 
+}
+
