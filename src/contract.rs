@@ -136,9 +136,7 @@ pub fn add_member (_deps: DepsMut, _env : Env, _key : String ,
 
 pub fn update_member (deps: DepsMut, _env : Env, key : String , 
     name : String , age : i8) -> Result<Response, ContractError>  {
-   
-    let updated_member = Member { name : name, age : age, date_joined : _env.block.time };
-   
+    
 
     let mem = MEMBERS.key(key.as_str());
 
@@ -149,12 +147,12 @@ pub fn update_member (deps: DepsMut, _env : Env, key : String ,
         return Err(ContractError::MemberNotFoundError{});
     }
 
-    println!("Updated member : {:?}", updated_member);
-   
+    let mut mem = stored_mem.expect("Invalid member!");
+    mem.name = name ;
+    mem.age = age;
     
-    MEMBERS.save(deps.storage,key.as_str() ,&updated_member)?;
+    MEMBERS.save(deps.storage,key.as_str() ,&mem)?;
 
-    
     Ok(Response::new().add_attribute("method", "member updated!"))
 
 }

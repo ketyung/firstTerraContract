@@ -24,6 +24,20 @@ res.count, "message:", res.message,"updated at:", new Date(res.updated), "owner:
 lib.reset().then( res=>{ console.log("res:", res);});
 ```
 
+## Test adding member onto Map object
+```javascript 
+lib.addMember().then(c=>{ console.log("c::",c);});
+```
+## Test getting member from the Map object
+```javascript 
+lib.getMember().then(c=>{ console.log("c::",c);});
+```
+## Test updating member into the Map object
+```javascript 
+lib.updateMember().then(c=>{ console.log("c::",c);});
+```
+
+
 # CosmWasm Starter Pack
 
 This is a template to build smart contracts in Rust to run inside a

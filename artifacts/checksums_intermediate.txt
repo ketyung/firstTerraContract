@@ -1,1 +1,1 @@
-22438d37b0cc665fa4f0d082390179bebbfdf4eb21b9fccdc89cfaf227988a43  ./target/wasm32-unknown-unknown/release/counter.wasm
+8d9f2cbc6ceb5d45fc2fb309e93be24a27c2cede125d59e0b91b10f0621cf3f5  ./target/wasm32-unknown-unknown/release/counter.wasm
